@@ -14,8 +14,14 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: 8.8
-      - run: gradle build --no-daemon
+      - name: Build
+        run: |
+          unzip -q -o ZeroAI-forge-1.21.1.zip
+          D=$(dirname "$(find . -name settings.gradle -not -path './.git/*' | head -1)")
+          echo "Project di: $D"
+          cd "$D"
+          gradle build --no-daemon
       - uses: actions/upload-artifact@v4
         with:
           name: zeroai-jar
-          path: build/libs/*.jar
+          path: "**/build/libs/*.jar"
