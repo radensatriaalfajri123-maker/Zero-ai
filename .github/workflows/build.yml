@@ -20,7 +20,13 @@ jobs:
           D=$(dirname "$(find . -name settings.gradle -not -path './.git/*' | head -1)")
           echo "Project di: $D"
           cd "$D"
-          gradle build --no-daemon
+          ok=0
+          for i in 1 2 3 4; do
+            if gradle build --no-daemon; then ok=1; break; fi
+            echo "Percobaan $i gagal, menunggu 45 detik..."
+            sleep 45
+          done
+          [ $ok = 1 ]
       - uses: actions/upload-artifact@v4
         with:
           name: zeroai-jar
